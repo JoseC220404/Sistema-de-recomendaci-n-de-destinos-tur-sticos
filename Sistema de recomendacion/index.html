@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Recomendación de Rutas Turísticas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistema de Recomendación de Rutas Turísticas</h1>
+            <p>Planifica tu viaje por México de manera óptima</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h2>Bienvenido a tu planificador de viajes</h2>
+            <p>Este sistema te ayuda a encontrar los mejores destinos turísticos en México según tus preferencias, presupuesto y tiempo disponible.</p>
+        </section>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🏖️</div>
+                <h3>Buscar por tipo</h3>
+                <p>Encuentra destinos según su tipo: playa, arqueológico, urbano, cultural o colonial.</p>
+                <a href="#search-type" class="btn">Buscar ahora</a>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🏄‍♂️</div>
+                <h3>Buscar por actividad</h3>
+                <p>Descubre destinos donde puedes realizar tus actividades favoritas.</p>
+                <a href="#search-activity" class="btn">Buscar ahora</a>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🗺️</div>
+                <h3>Rutas óptimas</h3>
+                <p>Calcula la mejor ruta entre destinos para optimizar tu tiempo de viaje.</p>
+                <a href="#search-route" class="btn">Buscar ahora</a>
+            </div>
+        </div>
+
+        <section id="map-section">
+            <h2>Mapa de Destinos</h2>
+            <div id="map"></div>
+        </section>
+
+        <section id="search-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="search-type">Buscar por tipo</button>
+                <button class="tab-btn" data-tab="search-activity">Buscar por actividad</button>
+                <button class="tab-btn" data-tab="search-route">Buscar ruta</button>
+                <button class="tab-btn" data-tab="search-itinerary">Itinerario personalizado</button>
+                <button class="tab-btn" data-tab="search-combination">Combinaciones</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="search-type" class="tab-pane active">
+                    <h3>Buscar destinos por tipo</h3>
+                    <form id="type-form">
+                        <div class="form-group">
+                            <label for="tipo">Tipo de destino:</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="">Selecciona un tipo</option>
+                                <option value="playa">Playa</option>
+                                <option value="arqueologico">Arqueológico</option>
+                                <option value="urbano">Urbano</option>
+                                <option value="cultural">Cultural</option>
+                                <option value="colonial">Colonial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="presupuesto">Presupuesto:</label>
+                            <select id="presupuesto" name="presupuesto" required>
+                                <option value="">Selecciona un presupuesto</option>
+                                <option value="bajo">Bajo</option>
+                                <option value="medio">Medio</option>
+                                <option value="alto">Alto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tiempo">Tiempo disponible (días):</label>
+                            <input type="number" id="tiempo" name="tiempo" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="results" id="type-results"></div>
+                </div>
+
+                <div id="search-activity" class="tab-pane">
+                    <h3>Buscar destinos por actividad</h3>
+                    <form id="activity-form">
+                        <div class="form-group">
+                            <label for="actividad">Actividad:</label>
+                            <select id="actividad" name="actividad" required>
+                                <option value="">Selecciona una actividad</option>
+                                <option value="snorkel">Snorkel</option>
+                                <option value="buceo">Buceo</option>
+                                <option value="fiesta">Fiesta</option>
+                                <option value="tour_guiado">Tour guiado</option>
+                                <option value="fotografia">Fotografía</option>
+                                <option value="museos">Museos</option>
+                                <option value="gastronomia">Gastronomía</option>
+                                <option value="compras">Compras</option>
+                                <option value="artesania">Artesanía</option>
+                                <option value="playa">Playa</option>
+                                <option value="senderismo">Senderismo</option>
+                                <option value="pesca">Pesca</option>
+                                <option value="descanso">Descanso</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="results" id="activity-results"></div>
+                </div>
+
+                <div id="search-route" class="tab-pane">
+                    <h3>Encontrar ruta entre destinos</h3>
+                    <form id="route-form">
+                        <div class="form-group">
+                            <label for="origen">Origen:</label>
+                            <select id="origen" name="origen" required>
+                                <option value="">Selecciona un origen</option>
+                                <option value="playa_del_carmen">Playa del Carmen</option>
+                                <option value="chichen_itza">Chichén Itzá</option>
+                                <option value="ciudad_de_mexico">Ciudad de México</option>
+                                <option value="oaxaca">Oaxaca</option>
+                                <option value="cancun">Cancún</option>
+                                <option value="palenque">Palenque</option>
+                                <option value="guanajuato">Guanajuato</option>
+                                <option value="los_cabos">Los Cabos</option>
+                                <option value="cuernavaca">Cuernavaca</option>
+                                <option value="tulum">Tulum</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="destino">Destino:</label>
+                            <select id="destino" name="destino" required>
+                                <option value="">Selecciona un destino</option>
+                                <option value="playa_del_carmen">Playa del Carmen</option>
+                                <option value="chichen_itza">Chichén Itzá</option>
+                                <option value="ciudad_de_mexico">Ciudad de México</option>
+                                <option value="oaxaca">Oaxaca</option>
+                                <option value="cancun">Cancún</option>
+                                <option value="palenque">Palenque</option>
+                                <option value="guanajuato">Guanajuato</option>
+                                <option value="los_cabos">Los Cabos</option>
+                                <option value="cuernavaca">Cuernavaca</option>
+                                <option value="tulum">Tulum</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="results" id="route-results"></div>
+                </div>
+
+                <div id="search-itinerary" class="tab-pane">
+                    <h3>Recomendar itinerario personalizado</h3>
+                    <form id="itinerary-form">
+                        <div class="form-group">
+                            <label for="tipo-itinerario">Tipo de destino preferido:</label>
+                            <select id="tipo-itinerario" name="tipo" required>
+                                <option value="">Selecciona un tipo</option>
+                                <option value="playa">Playa</option>
+                                <option value="arqueologico">Arqueológico</option>
+                                <option value="urbano">Urbano</option>
+                                <option value="cultural">Cultural</option>
+                                <option value="colonial">Colonial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="presupuesto-itinerario">Presupuesto:</label>
+                            <select id="presupuesto-itinerario" name="presupuesto" required>
+                                <option value="">Selecciona un presupuesto</option>
+                                <option value="bajo">Bajo</option>
+                                <option value="medio">Medio</option>
+                                <option value="alto">Alto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tiempo-itinerario">Tiempo disponible (días):</label>
+                            <input type="number" id="tiempo-itinerario" name="tiempo" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="results" id="itinerary-results"></div>
+                </div>
+
+                <div id="search-combination" class="tab-pane">
+                    <h3>Buscar combinaciones de destinos</h3>
+                    <form id="combination-form">
+                        <div class="form-group">
+                            <label for="num-destinos">Número de destinos a visitar:</label>
+                            <input type="number" id="num-destinos" name="num" min="1" max="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tiempo-max">Tiempo máximo disponible (días):</label>
+                            <input type="number" id="tiempo-max" name="tiempo" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="results" id="combination-results"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Sistema de Recomendación de Rutas Turísticas</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
